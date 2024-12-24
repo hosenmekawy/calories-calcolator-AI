@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة السعرات الحرارية اليومية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1490818387583-1baba5e638af?q=80');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="min-h-screen py-4 md:py-8">
+    <div class="container mx-auto px-4">
+        <div class="max-w-full md:max-w-4xl mx-auto">
+            <div class="glass-effect rounded-xl shadow-2xl p-4 md:p-6">
+                <!-- Header -->
+                <div class="text-center mb-6 md:mb-8">
+                    <h1 class="text-2xl md:text-3xl font-bold text-green-600 mb-2">حاسبة السعرات الحرارية اليومية</h1>
+                    <p class="text-sm md:text-base text-gray-600">تتبع وجباتك اليومية وسعراتها الحرارية</p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div class="relative overflow-hidden rounded-lg h-28 md:h-32">
+                        <img src="https://images.unsplash.com/photo-1525351484163-7529414344d8" alt="Breakfast" class="w-full h-full object-cover hover:scale-110 transition duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-3">
+                            <span class="text-white font-bold">الفطور</span>
+                        </div>
+                    </div>
+                    <div class="relative overflow-hidden rounded-lg h-28 md:h-32">
+                        <img src="https://images.unsplash.com/photo-1547592180-85f173990554" alt="Lunch" class="w-full h-full object-cover hover:scale-110 transition duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-3">
+                            <span class="text-white font-bold">الغداء</span>
+                        </div>
+                    </div>
+                    <div class="relative overflow-hidden rounded-lg h-28 md:h-32">
+                        <img src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327" alt="Dinner" class="w-full h-full object-cover hover:scale-110 transition duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-3">
+                            <span class="text-white font-bold">العشاء</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-green-50 rounded-lg p-4 border border-green-200 mt-6 md:mt-8">
+                    <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+                        <div class="text-center">
+                            <div class="flex items-center justify-center gap-2 text-red-500">
+                                <i class="fas fa-fire"></i>
+                                <span class="text-lg md:text-2xl font-bold">{{ total_nutrition.calories }}</span>
+                            </div>
+                            <span class="text-xs md:text-sm text-gray-600">سعرة</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="flex items-center justify-center gap-2 text-blue-500">
+                                <i class="fas fa-egg"></i>
+                                <span class="text-lg md:text-2xl font-bold">{{ total_nutrition.protein }}</span>
+                            </div>
+                            <span class="text-xs md:text-sm text-gray-600">جرام بروتين</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="flex items-center justify-center gap-2 text-yellow-500">
+                                <i class="fas fa-bread-slice"></i>
+                                <span class="text-lg md:text-2xl font-bold">{{ total_nutrition.carbs }}</span>
+                            </div>
+                            <span class="text-xs md:text-sm text-gray-600">جرام كربوهيدرات</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="flex items-center justify-center gap-2 text-green-500">
+                                <i class="fas fa-oil-can"></i>
+                                <span class="text-lg md:text-2xl font-bold">{{ total_nutrition.fats }}</span>
+                            </div>
+                            <span class="text-xs md:text-sm text-gray-600">جرام دهون</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Meal Form -->
+                <form id="mealForm" class="space-y-4 mt-6 md:mt-8">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-1">نوع الوجبة</label>
+                            <select name="meal_type" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                {% for key, value in meal_types.items() %}
+                                <option value="{{ key }}">{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 text-sm font-bold mb-1">وصف الطعام</label>
+                            <textarea name="food" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" rows="2" placeholder="مثال: طبق أرز بالخضار مع قطعة دجاج مشوي"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition duration-200">
+                        <i class="fas fa-plus ml-2"></i>
+                        أضف الوجبة
+                    </button>
+                </form>
+
+                <!-- Loading Indicator -->
+                <div id="loading" class="hidden my-6 md:my-8 text-center">
+                    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-green-500 mx-auto"></div>
+                    <p class="text-sm md:text-base text-gray-600 mt-2">جاري الحساب...</p>
+                </div>
+
+                <!-- Meals List -->
+                <div class="space-y-4 md:space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-lg md:text-xl font-bold text-gray-800">الوجبات اليومية</h2>
+                        <button onclick="clearMeals()" class="bg-red-500 text-white py-1 px-3 rounded-lg hover:bg-red-600 transition duration-200">
+                            <i class="fas fa-trash ml-1"></i>
+                            مسح الكل
+                        </button>
+                    </div>
+                    
+                    <div id="mealsList">
+                        {% for meal_type, meals_list in meals.items() %}
+                        <div class="meal-section bg-white rounded-lg p-4 shadow-md" data-meal-type="{{ meal_type }}">
+                            <div class="flex items-center gap-2 mb-4">
+                                {% if meal_type == 'breakfast' %}
+                                    <i class="fas fa-sun text-yellow-500 text-xl"></i>
+                                {% elif meal_type == 'lunch' %}
+                                    <i class="fas fa-cloud-sun text-orange-500 text-xl"></i>
+                                {% elif meal_type == 'dinner' %}
+                                    <i class="fas fa-moon text-blue-500 text-xl"></i>
+                                {% else %}
+                                    <i class="fas fa-utensils text-green-500 text-xl"></i>
+                                {% endif %}
+                                <h3 class="text-base md:text-xl font-bold text-gray-800">{{ meal_types[meal_type] }}</h3>
+                            </div>
+
+                            <div class="space-y-3">
+                                {% for meal in meals_list %}
+                                <div class="bg-gray-50 rounded-lg border border-gray-200">
+                                    <div class="p-4">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <div>
+                                                <h4 class="font-bold text-gray-800 text-sm md:text-lg">{{ meal.food }}</h4>
+                                                
+                                                <div class="mt-2 grid grid-cols-2 gap-2">
+                                                    <div class="flex items-center gap-1 text-red-500">
+                                                        <i class="fas fa-fire"></i>
+                                                        <span class="text-xs md:text-base font-bold">{{ meal.nutrition.calories }} سعرة</span>
+                                                    </div>
+                                                    <div class="flex items-center gap-1 text-blue-500">
+                                                        <i class="fas fa-egg"></i>
+                                                        <span class="text-xs md:text-sm">بروتين {{ meal.nutrition.protein }} جرام</span>
+                                                    </div>
+                                                    <div class="flex items-center gap-1 text-yellow-500">
+                                                        <i class="fas fa-bread-slice"></i>
+                                                        <span class="text-xs md:text-sm">كارب {{ meal.nutrition.carbs }} جرام</span>
+                                                    </div>
+                                                    <div class="flex items-center gap-1 text-green-500">
+                                                        <i class="fas fa-oil-can"></i>
+                                                        <span class="text-xs md:text-sm">دهون {{ meal.nutrition.fats }} جرام</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span class="text-xs text-gray-500">{{ meal.date }}</span>
+                                        </div>
+                                        
+                                        <button onclick="toggleAnalysis(this)" class="w-full bg-green-100 text-green-600 py-2 px-4 rounded-lg hover:bg-green-200 transition-all duration-300 flex items-center justify-center gap-2">
+                                            <span>تفاصيل التحليل</span>
+                                            <i class="fas fa-chevron-down transition-transform duration-300"></i>
+                                        </button>
+                                    </div>
+
+                                    <div class="hidden analysis-section">
+                                        <div class="p-4 border-t border-gray-200">
+                                            <div class="bg-white p-4 rounded-lg shadow-sm">
+                                                <div class="text-gray-700 whitespace-pre-line">{{ meal.analysis }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('mealForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loading = document.getElementById('loading');
+            loading.classList.remove('hidden');
+            const formData = new FormData(e.target);
+            try {
+                const response = await fetch('/add_meal', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                location.reload();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ أثناء إضافة الوجبة');
+            } finally {
+                loading.classList.add('hidden');
+            }
+        });
+
+        function toggleAnalysis(button) {
+            const mealCard = button.closest('.bg-gray-50');
+            const analysisSection = mealCard.querySelector('.analysis-section');
+            const icon = button.querySelector('i');
+            analysisSection.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+            const buttonText = button.querySelector('span');
+            buttonText.textContent = analysisSection.classList.contains('hidden') ? 'تفاصيل التحليل' : 'إخفاء التحليل';
+        }
+
+        async function clearMeals() {
+            if (confirm('هل أنت متأكد من مسح جميع الوجبات؟')) {
+                try {
+                    await fetch('/clear_meals', { method: 'POST' });
+                    location.reload();
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('حدث خطأ أثناء مسح الوجبات');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
