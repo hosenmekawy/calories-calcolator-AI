@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: calories-calculator
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python app.py"
+    envVars:
+      - key: GOOGLE_API_KEY
+        value: AIzaSyAwC_99aZtbAiaLroXmDozfsmKJYoyGavU
+      - key: FLASK_SECRET_KEY
+        value: 4b44497e65c070549f84d97cd330e04dbc0d9e2eb489fdc347a62aeae2280b12
+      - key: SQLALCHEMY_DATABASE_URI
+        value: sqlite:///meals.db
