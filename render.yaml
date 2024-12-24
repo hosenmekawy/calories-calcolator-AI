@@ -1,13 +1,19 @@
 services:
   - type: web
     name: calories-calculator
-    env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn app:app"
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.9
       - key: GOOGLE_API_KEY
-        value: AIzaSyAwC_99aZtbAiaLroXmDozfsmKJYoyGavU
+        sync: false  # Add this manually in Render dashboard
       - key: FLASK_SECRET_KEY
-        value: 4b44497e65c070549f84d97cd330e04dbc0d9e2eb489fdc347a62aeae2280b12
+        generateValue: true
       - key: SQLALCHEMY_DATABASE_URI
-        value: sqlite:///meals.db
+        value: sqlite:///instance/meals.db
+    disk:
+      name: sqlite-data
+      mountPath: /opt/render/project/src/instance
+      sizeGB: 1

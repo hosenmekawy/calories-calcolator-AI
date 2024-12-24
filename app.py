@@ -196,10 +196,12 @@ def regex_findall(text, pattern):
     matches = re.findall(pattern, text)
     return matches if matches else ['0']
 
-from waitress import serve
+
+
 
 if __name__ == '__main__':
-    serve(app, host="0.0.0.0", port=5000)
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
     
 
 
