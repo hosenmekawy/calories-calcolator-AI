@@ -11,8 +11,8 @@ import re
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///meals.db'
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'default-secret-key')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///meals.db')
 db = SQLAlchemy(app)
 
 def get_local_ip():
@@ -196,11 +196,11 @@ def regex_findall(text, pattern):
     matches = re.findall(pattern, text)
     return matches if matches else ['0']
 
+from waitress import serve
+
 if __name__ == '__main__':
-    host_ip = get_local_ip()
-    print(f"\n🚀 Server running at: http://{host_ip}:5000")
-    print(f"📱 Access from other devices using the above URL")
-    print(f"💻 Local access: http://localhost:5000\n")
-    app.run(host=host_ip, port=5000, debug=True)
+    serve(app, host="0.0.0.0", port=5000)
+    
+
 
 
